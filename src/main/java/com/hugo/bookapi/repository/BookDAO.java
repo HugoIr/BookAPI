@@ -15,12 +15,11 @@ public class BookDAO {
         return mongoTemplate.findById(id, Book.class);
     }
 
-    public String postBook(Book book) {
+    public Book postBook(Book book) {
         if (book != null) {
-            mongoTemplate.save(book);
-            return "Successful save the book with id " + book.getId();
+            return mongoTemplate.save(book);
         }
-        return "Failed to save the book";
+        return null;
     }
 
 
