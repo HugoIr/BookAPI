@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 public class NextSequenceService {
     @Autowired private MongoOperations mongo;
 
-    public String getNextSequence(String seqName)
-    {
+    public String getNextSequence(String seqName)    {
         CustomSequences counter = mongo.findAndModify(
                 query(where("_id").is(seqName)),
                 new Update().inc("seq",1),

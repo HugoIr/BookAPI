@@ -3,6 +3,7 @@ package com.hugo.bookapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hugo.bookapi.entity.Book;
 import com.hugo.bookapi.service.BookService;
+import com.hugo.bookapi.service.TokenService;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,15 +15,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -36,9 +33,14 @@ public class BookControllerTest {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private TokenService tokenService;
+
     private final String baseUrl = "/book";
 
     private Book book1;
+    private Book book2;
+    private String token1;
     private final String nonExsitentId = "-1";
     /**
      * Set up.
@@ -46,6 +48,8 @@ public class BookControllerTest {
     @BeforeEach
     public void setUp() throws Exception {
         book1 = new Book ("Book1", "John Doe", "2020");
+        book1 = new Book ("Book2", "John Doe", "2021");
+        token1 = tokenService.generateNewToken();
         bookService.postBook(book1);
     }
 
@@ -59,9 +63,22 @@ public class BookControllerTest {
     }
 
     @Test
+    public void testControllerGetAllBook() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all")
+                .header("authorizationtoken", token1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    assertTrue(jsonString != null);
+                });
+    }
+
+    @Test
     public void testControllerGetBook() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/" + book1.getId())
+                .header("authorizationtoken", token1)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(result -> {
@@ -83,6 +100,7 @@ public class BookControllerTest {
     public void testControllerGetBookWithInvalidAcceptHeader() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/" + book1.getId())
+                .header("authorizationtoken", token1)
                 .accept(MediaType.APPLICATION_XML))
                 .andExpect(status().isNotAcceptable());
     }
@@ -91,6 +109,7 @@ public class BookControllerTest {
     public void testControllerGetBookWithNonExistentId() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/" + nonExsitentId)
+                .header("authorizationtoken", token1)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -103,8 +122,11 @@ public class BookControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.post(baseUrl + "/post")
                 .content(asJsonString(book))
+                .header("authorizationtoken", token1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+
 }

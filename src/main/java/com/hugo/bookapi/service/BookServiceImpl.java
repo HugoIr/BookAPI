@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService{
@@ -18,11 +19,18 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Book getBookById(String id) throws Exception {
-        Book book = bookDAO.getBook(id);
-        if (book == null) {
-            throw new NotFoundException("There is no book with id: " + id);
-        }
-        return book;
+        try{
+            return bookDAO.getBook(id);
+        } catch (Exception e) {
+        throw new NotFoundException("Book is not available");
+    }
+
+    }
+
+
+    @Override
+    public List<Book> getAllBooks() throws NotFoundException {
+        return bookDAO.getAllBooks();
     }
 
     @Override
@@ -52,4 +60,5 @@ public class BookServiceImpl implements BookService{
 
         return bookDAO.postBook(book);
     }
+
 }

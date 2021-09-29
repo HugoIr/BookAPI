@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-@Document(value = "token")
+@Document(collection = "token")
 @Setter
 @Getter
 @AllArgsConstructor

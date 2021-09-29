@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @Setter
 public class Book {
 
-    @MongoId()
+    @MongoId(value = FieldType.OBJECT_ID)
     private String id;
 
     private String bookName;
@@ -25,5 +25,8 @@ public class Book {
         this.bookName = bookName;
         this.authorName = authorName;
         this.publicationYear = publicationYear;
+    }
+    public Book() {
+
     }
 }

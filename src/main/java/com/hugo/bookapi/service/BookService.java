@@ -3,9 +3,13 @@ package com.hugo.bookapi.service;
 import com.hugo.bookapi.entity.Book;
 import com.hugo.bookapi.exception.BadRequestException;
 
+import java.util.List;
+
 public interface BookService {
 
-    public Book getBookById(String id) throws Exception;
+    Book getBookById(String id) throws Exception;
 
-    public Book postBook(Book book) throws Exception;
+    Book postBook(Book book) throws Exception;
+
+    List<Book> getAllBooks() throws Exception;
 }
