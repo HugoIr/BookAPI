@@ -97,10 +97,6 @@ public class BookControllerTest {
 
     @Test
     public void testControllerPostBook() throws Exception {
-//        Map<String, String> map = new HashMap<>();
-//        map.put("bookName", "Book 1");
-//        map.put("authorName", "John Doe");
-//        map.put("publicationYear", "2021");
 
         Book book = new Book ("Book1", "John Doe", "2021");
 

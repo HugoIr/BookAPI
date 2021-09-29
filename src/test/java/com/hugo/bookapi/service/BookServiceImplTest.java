@@ -23,9 +23,30 @@ public class BookServiceImplTest {
 
     private Book book1;
 
+    private final String nonExsitentId = "-1";
+
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         book1 = new Book ("Book1", "John Doe", "2021");
+    }
+
+    @Test
+    public void testGetBook() throws Exception {
+        Book bookResult = bookService.getBookById(book1.getId());
+
+        assertEquals(book1.getId(), bookResult.getId());
+        assertEquals(book1.getBookName(), bookResult.getBookName());
+        assertEquals(book1.getAuthorName(), bookResult.getAuthorName());
+        assertEquals(book1.getPublicationYear(), bookResult.getPublicationYear());
+    }
+
+    @Test
+    public void testGetNonExistentBook() {
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            bookService.getBookById(nonExsitentId);
+        });
+        assertTrue(exception.getMessage().contains("There is no book with id: " + nonExsitentId));
     }
 
     @Test
@@ -40,7 +61,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void TestPostInvalidBook() throws Exception {
+    public void testPostInvalidBook() {
         Book book = null;
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -50,7 +71,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void TestPostInvalidBookName() throws Exception {
+    public void testPostInvalidBookName() {
         Book book = new Book (null, "John Doe", "2020");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -60,7 +81,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void TestPostInvalidAuthorName() throws Exception {
+    public void testPostInvalidAuthorName() {
         Book book = new Book ("Book1", null, "2020");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -70,7 +91,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void TestPostInvalidPublicationYear() throws Exception {
+    public void testPostInvalidPublicationYear() {
         Book book = new Book ("Book1", "John", null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -80,7 +101,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void TestPostInvalidAllBookFields() throws Exception {
+    public void testPostInvalidAllBookFields() {
         Book book = new Book (null, null, null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
