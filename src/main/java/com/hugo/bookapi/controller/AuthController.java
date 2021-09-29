@@ -29,6 +29,6 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .headers(responseHeaders)
-                .body("Successful create the authorization token");
+                .body("Successful create the authorization token. The token is: " + token);
     }
 }
