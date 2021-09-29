@@ -19,30 +19,30 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping(path = "/get/{id}", produces = {"application/json"})
-    public ResponseEntity<Book> getBook(@PathVariable String id) {
-        ResponseEntity<Book> response;
+    public ResponseEntity<Object> getBook(@PathVariable String id) {
+        ResponseEntity<Object> response;
         try {
             Book book = bookService.getBookById(id);
             response =  new ResponseEntity<>(book, new HttpHeaders(), HttpStatus.OK);
         } catch (NotFoundException e) {
-            response =  new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
+            response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
-            response =  new ResponseEntity<>(null, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;
 
     }
 
     @PostMapping("/post")
-    public ResponseEntity<Book> postBook(
+    public ResponseEntity<Object> postBook(
 //            @RequestHeader(value = "Accept") String acceptHeader,
 //            @RequestHeader(value = "AuthorizationName") String authorizationName,
 //            @RequestHeader(value = "AuthorizationToken") String authorizationToken,
             @RequestHeader HttpHeaders headers,
             @RequestBody Book book
     ) {
-        ResponseEntity<Book> response;
+        ResponseEntity<Object> response;
         try {
 //            System.out.println(headers.getAccept());
 //            System.out.println(headers.getDate());
@@ -51,10 +51,10 @@ public class BookController {
 //            System.out.println(headers.toSingleValueMap().get("authorizationtoken"));
              Book newBook = bookService.postBook(book);
              response = new ResponseEntity<>(newBook, null, HttpStatus.OK);
-        } catch (BadRequestException badRequestException) {
-            response = new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+        } catch (BadRequestException e) {
+            response = new ResponseEntity<>(e.getMessage(), null, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            response = new ResponseEntity<>(null, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new ResponseEntity<>(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;
     }

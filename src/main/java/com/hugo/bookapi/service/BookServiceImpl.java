@@ -8,6 +8,8 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class BookServiceImpl implements BookService{
     @Autowired
@@ -26,9 +28,29 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Book postBook(Book book) throws Exception {
-        if (book.getBookName() == null) {
-            throw new BadRequestException("Please fill the book name");
+        if (book == null) {
+            throw new BadRequestException("Please fill with the valid JSON");
         }
+
+        String bookName = book.getBookName();
+        String authorName = book.getAuthorName();
+        String publicationYear = book.getPublicationYear();
+
+        ArrayList<String> requiredField = new ArrayList<>();
+
+        if (bookName == null) {
+            requiredField.add("book name");
+        }
+        if (authorName == null) {
+            requiredField.add("author name");
+        }
+        if (publicationYear == null) {
+            requiredField.add("publication year");
+        }
+        if (bookName == null || authorName == null || publicationYear == null) {
+            throw new BadRequestException("Please fill the required field: " + String.join(", ", requiredField));
+        }
+
         return bookDAO.postBook(book);
     }
 }
