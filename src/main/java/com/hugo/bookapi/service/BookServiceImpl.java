@@ -5,6 +5,7 @@ import com.hugo.bookapi.exception.BadRequestException;
 import com.hugo.bookapi.exception.UnauthorizedException;
 import com.hugo.bookapi.repository.BookDAO;
 import javassist.NotFoundException;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,6 @@ public class BookServiceImpl implements BookService{
 
     }
 
-
     @Override
     public List<Book> getAllBooks() throws NotFoundException {
         return bookDAO.getAllBooks();
@@ -35,8 +35,8 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Book postBook(Book book) throws Exception {
-        if (book == null) {
-            throw new BadRequestException("Please fill with the valid JSON");
+        if (book == null || book.getId() != null) {
+            throw new BadRequestException("Please fill with the valid JSON format: bookName, authorName, publicationYear");
         }
 
         String bookName = book.getBookName();

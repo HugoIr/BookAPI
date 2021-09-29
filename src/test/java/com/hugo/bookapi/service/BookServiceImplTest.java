@@ -12,7 +12,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +80,18 @@ public class BookServiceImplTest {
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             bookService.postBook(book);
         });
-        assertTrue(exception.getMessage().contains("Please fill with the valid JSON"));
+        assertTrue(exception.getMessage().contains("Please fill with the valid JSON format: bookName, authorName, publicationYear"));
+    }
+
+    @Test
+    public void testPostInvalidBookJSONRequest() {
+        Book book = new Book("Book5", "Doe", "2012");
+        book.setId("1234");
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            bookService.postBook(book);
+        });
+        assertTrue(exception.getMessage().contains("Please fill with the valid JSON format: bookName, authorName, publicationYear"));
     }
 
     @Test
