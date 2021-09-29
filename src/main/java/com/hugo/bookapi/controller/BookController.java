@@ -27,6 +27,7 @@ public class BookController {
         } catch (NotFoundException e) {
             response =  new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            e.printStackTrace();
             response =  new ResponseEntity<>(null, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return response;
@@ -43,11 +44,11 @@ public class BookController {
     ) {
         ResponseEntity<Book> response;
         try {
-            System.out.println(headers.getAccept());
-            System.out.println(headers.getDate());
-            System.out.println(headers.toString());
-            System.out.println(headers.toSingleValueMap().get("authorizationname"));
-            System.out.println(headers.toSingleValueMap().get("authorizationtoken"));
+//            System.out.println(headers.getAccept());
+//            System.out.println(headers.getDate());
+//            System.out.println(headers.toString());
+//            System.out.println(headers.toSingleValueMap().get("authorizationname"));
+//            System.out.println(headers.toSingleValueMap().get("authorizationtoken"));
              Book newBook = bookService.postBook(book);
              response = new ResponseEntity<>(newBook, null, HttpStatus.OK);
         } catch (BadRequestException badRequestException) {

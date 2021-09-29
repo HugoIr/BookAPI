@@ -17,6 +17,7 @@ public class BookServiceImpl implements BookService{
     @Override
     public Book getBookById(String id) throws Exception {
         Book book = bookDAO.getBook(id);
+        System.out.println("book is " + book );
         if (book == null) {
             throw new NotFoundException("There is no book with id: " + id);
         }
