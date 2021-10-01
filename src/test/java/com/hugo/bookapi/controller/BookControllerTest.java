@@ -96,6 +96,35 @@ public class BookControllerTest {
                 });
     }
 
+
+    @Test
+    public void testControllerGetAllBooksWithInvalidToken() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all")
+                .header("authorizationtoken", "-1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    System.out.println(jsonString);
+                    assertEquals("Authorization token is not valid", jsonString);
+                });
+    }
+
+    @Test
+    public void testControllerGetBookWithInvalidToken() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/" + book1.getId())
+                .header("authorizationtoken", "-1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    System.out.println(jsonString);
+                    assertEquals("Authorization token is not valid", jsonString);
+                });
+    }
+
     @Test
     public void testControllerGetBookWithInvalidAcceptHeader() throws Exception {
 
@@ -126,6 +155,51 @@ public class BookControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testControllerPostBookWithNullObject() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.post(baseUrl + "/post")
+                .content(asJsonString(null))
+                .header("authorizationtoken", token1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testControllerPostBookWithInvalidToken() throws Exception {
+
+        Book book = new Book ("Book1", "John Doe", "2021");
+
+        mvc.perform(MockMvcRequestBuilders.post("/book/post")
+                .content(asJsonString(book))
+                .header("authorizationtoken", "-1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    System.out.println(jsonString);
+                    assertEquals("Authorization token is not valid", jsonString);
+                });
+    }
+
+    @Test
+    public void testControllerPostBookWithNoToken() throws Exception {
+
+        Book book = new Book ("Book1", "John Doe", "2021");
+
+        mvc.perform(MockMvcRequestBuilders.post("/book/post")
+                .content(asJsonString(book))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    assertEquals("Please add the authorization token first", jsonString);
+                });
     }
 
 }
