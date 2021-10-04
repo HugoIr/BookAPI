@@ -8,6 +8,7 @@ import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -75,18 +76,18 @@ public class BookControllerTest {
     }
 
 
-    @Test
-    public void testControllerGetAllBookWithInvalidUrl() throws Exception {
-
-        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all/" + "%")
-                .header("authorizationtoken", token1)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andDo(result -> {
-                    String jsonString = result.getResponse().getContentAsString();
-                    System.out.println(jsonString);
-                });
-    }
+//    @Test
+//    public void testControllerGetAllBookWithNotFoundException() throws Exception {
+//
+//        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all")
+//                .header("authorizationtoken", token1)
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound())
+//                .andDo(result -> {
+//                    String jsonString = result.getResponse().getContentAsString();
+//                    System.out.println(jsonString);
+//                });
+//    }
 
     @Test
     public void testControllerGetAllBooksWithInvalidToken() throws Exception {
@@ -157,18 +158,18 @@ public class BookControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    public void testControllerGetBookWithBadRequest() throws Exception {
-//        Object tempObject = "<p>Hello World</p>";
-//        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get<?<?<?<?<?<?+++_+_+}}}{}" )
-//                .header("authorizationtoken", token1)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest())
-//                .andDo(result -> {
-//                    String jsonString = result.getResponse().getContentAsString();
-//                    System.out.println(jsonString);
-//                });
-//    }
+    @Test
+    public void testControllerGetBookWithBadRequest() throws Exception {
+        Object tempObject = "<p>Hello World</p>";
+        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/" + tempObject )
+                .header("authorizationtoken", token1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    System.out.println(jsonString);
+                });
+    }
 
     @Test
     public void testControllerPostBook() throws Exception {
@@ -230,18 +231,20 @@ public class BookControllerTest {
     }
 
     @Test
-    public void testControllerPostBookWithNoToken() throws Exception {
+    public void testControllerPostBookWithInvalidObject() throws Exception {
 
-        Book book = new Book ("Book1", "John Doe", "2021");
+        Book book = new Book("Book5", "Doe", "2012");
+        book.setId("1234");
 
         mvc.perform(MockMvcRequestBuilders.post("/book/post")
                 .content(asJsonString(book))
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("authorizationtoken", token1)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isBadRequest())
                 .andDo(result -> {
                     String jsonString = result.getResponse().getContentAsString();
-                    assertEquals("Please add the authorization token first", jsonString);
+                    assertEquals("Please fill with the valid JSON format: bookName, authorName, publicationYear", jsonString);
                 });
     }
 

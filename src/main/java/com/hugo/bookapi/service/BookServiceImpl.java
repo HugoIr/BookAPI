@@ -23,14 +23,19 @@ public class BookServiceImpl implements BookService{
         try{
             return bookDAO.getBook(id);
         } catch (Exception e) {
-        throw new NotFoundException("Book is not available");
-    }
+            e.printStackTrace();
+            throw new NotFoundException("Book is not available");
+        }
 
     }
 
     @Override
     public List<Book> getAllBooks() throws NotFoundException {
-        return bookDAO.getAllBooks();
+        List<Book> books = bookDAO.getAllBooks();
+        if (books.size() == 0) {
+            throw new NotFoundException("There is no book available");
+        }
+        return books;
     }
 
     @Override
