@@ -5,4 +5,4 @@ pipelines:
     main:
       - step:
           script:
-            - mvn -B verify
+            - mvn -B test
