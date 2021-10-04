@@ -5,4 +5,5 @@ pipelines:
     main:
       - step:
           script:
+            - mvn -B install
             - mvn -B test
