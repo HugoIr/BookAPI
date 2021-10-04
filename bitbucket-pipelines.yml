@@ -5,5 +5,4 @@ pipelines:
     main:
       - step:
           script:
-            - bash configure-maven.sh
             - mvn -B verify
