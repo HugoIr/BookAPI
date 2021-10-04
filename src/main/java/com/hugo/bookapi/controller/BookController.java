@@ -43,7 +43,7 @@ public class BookController {
             response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
-            response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.BAD_REQUEST);
         }
         return response;
 
@@ -65,7 +65,7 @@ public class BookController {
             response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
-            response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response =  new ResponseEntity<>(e.getMessage(), null, HttpStatus.BAD_REQUEST);
         }
         return response;
 
@@ -85,10 +85,8 @@ public class BookController {
              response = new ResponseEntity<>(newBook, null, HttpStatus.OK);
         } catch (UnauthorizedException e) {
             response = new ResponseEntity<>(e.getMessage(), null, HttpStatus.UNAUTHORIZED);
-        } catch (BadRequestException e) {
-            response = new ResponseEntity<>(e.getMessage(), null, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            response = new ResponseEntity<>(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new ResponseEntity<>(e.getMessage(), null, HttpStatus.BAD_REQUEST);
         }
         return response;
     }

@@ -74,6 +74,35 @@ public class BookControllerTest {
                 });
     }
 
+
+    @Test
+    public void testControllerGetAllBookWithInvalidUrl() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all/" + "%")
+                .header("authorizationtoken", token1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    System.out.println(jsonString);
+                });
+    }
+
+    @Test
+    public void testControllerGetAllBooksWithInvalidToken() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all")
+                .header("authorizationtoken", "-1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    System.out.println(jsonString);
+                    assertEquals("Authorization token is not valid", jsonString);
+                });
+    }
+
+
     @Test
     public void testControllerGetBook() throws Exception {
 
@@ -93,21 +122,6 @@ public class BookControllerTest {
                     assertEquals(book1.getBookName(), resultBookName);
                     assertEquals(book1.getAuthorName(), resultAuthorName);
                     assertEquals(book1.getPublicationYear(), resultPublicationYear);
-                });
-    }
-
-
-    @Test
-    public void testControllerGetAllBooksWithInvalidToken() throws Exception {
-
-        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get/all")
-                .header("authorizationtoken", "-1")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andDo(result -> {
-                    String jsonString = result.getResponse().getContentAsString();
-                    System.out.println(jsonString);
-                    assertEquals("Authorization token is not valid", jsonString);
                 });
     }
 
@@ -142,6 +156,19 @@ public class BookControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+//    @Test
+//    public void testControllerGetBookWithBadRequest() throws Exception {
+//        Object tempObject = "<p>Hello World</p>";
+//        mvc.perform(MockMvcRequestBuilders.get(baseUrl + "/get<?<?<?<?<?<?+++_+_+}}}{}" )
+//                .header("authorizationtoken", token1)
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest())
+//                .andDo(result -> {
+//                    String jsonString = result.getResponse().getContentAsString();
+//                    System.out.println(jsonString);
+//                });
+//    }
 
     @Test
     public void testControllerPostBook() throws Exception {
@@ -183,6 +210,22 @@ public class BookControllerTest {
                     String jsonString = result.getResponse().getContentAsString();
                     System.out.println(jsonString);
                     assertEquals("Authorization token is not valid", jsonString);
+                });
+    }
+
+    @Test
+    public void testControllerPostBookWithNoToken() throws Exception {
+
+        Book book = new Book ("Book1", "John Doe", "2021");
+
+        mvc.perform(MockMvcRequestBuilders.post("/book/post")
+                .content(asJsonString(book))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(result -> {
+                    String jsonString = result.getResponse().getContentAsString();
+                    assertEquals("Please add the authorization token first", jsonString);
                 });
     }
 

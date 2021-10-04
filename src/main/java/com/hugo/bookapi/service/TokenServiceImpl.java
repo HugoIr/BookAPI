@@ -13,8 +13,8 @@ import java.util.Base64;
 @Service
 public class TokenServiceImpl implements TokenService{
 
-    private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
-    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     @Autowired
     TokenDAO tokenDAO;

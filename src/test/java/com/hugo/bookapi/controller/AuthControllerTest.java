@@ -3,6 +3,7 @@ package com.hugo.bookapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hugo.bookapi.entity.Book;
 import com.hugo.bookapi.entity.Token;
+import com.hugo.bookapi.request.AuthRequest;
 import com.hugo.bookapi.service.BookService;
 import com.hugo.bookapi.service.TokenService;
 import com.jayway.jsonpath.JsonPath;
@@ -56,13 +57,11 @@ public class AuthControllerTest {
 
     @Test
     public void testCreateToken() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("username", "john");
-        map.put("password", "password");
+        AuthRequest request = new AuthRequest("john", "password");
 
         mvc.perform(MockMvcRequestBuilders.post(baseUrl + "/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(map))
+                .content(asJsonString(request))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
